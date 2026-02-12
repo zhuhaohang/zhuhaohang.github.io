@@ -1,163 +1,294 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haohang Zhu | AI for Ocean</title>
+    <title>Haohang Zhu | AI for Science</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* --- 全局变量与重置 --- */
+        /* --- 全局变量与配色 (高级深海蓝) --- */
         :root {
-            --bg-color: #0a192f; /* 深海蓝背景 */
-            --text-primary: #ccd6f6;
-            --text-secondary: #8892b0;
-            --accent-color: #64ffda; /* 科技青，用于强调 */
-            --card-bg: #112240;
-            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --bg-color: #0b1120;      /* 更深邃的蓝黑底色 */
+            --sidebar-bg: rgba(30, 41, 59, 0.6); /* 磨砂玻璃底色 */
+            --card-bg: rgba(30, 41, 59, 0.3);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-color: #38bdf8;  /* 科技蓝 */
+            --border-color: rgba(255, 255, 255, 0.08);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        
         body {
-            font-family: var(--font-main);
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+            /* 背景增加深海光晕，提升氛围感 */
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 25%);
         }
 
-        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
         a:hover { color: var(--accent-color); }
-
-        /* --- 布局组件 --- */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 20px;
-            position: relative;
-            z-index: 10; /* 确保内容在Canvas之上 */
-        }
-
-        section {
-            padding: 80px 0;
-        }
-
-        /* --- 导航栏 --- */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            margin-bottom: 40px;
-        }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--accent-color); }
-        .nav-links a { margin-left: 20px; font-size: 0.9rem; color: var(--text-primary); }
-        .nav-links a:hover { color: var(--accent-color); }
 
         /* --- Canvas 背景 --- */
         #canvas-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0; /* 在最底层 */
-            opacity: 0.4;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; opacity: 0.5; pointer-events: none;
         }
 
-        /* --- Hero Section --- */
-        .hero {
-            min-height: 80vh;
+        /* --- 主容器 --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- 左侧侧边栏 (高级磨砂质感) --- */
+        .sidebar {
+            width: 360px; /* 保持你要求的宽度 */
+            
+            /* 磨砂玻璃效果 */
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            
+            padding: 30px 25px; /* 保持压缩的内边距 */
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-        }
-        .hero h1 {
-            font-size: 4rem;
-            color: #e6f1ff;
-            margin-bottom: 10px;
-        }
-        .hero h2 {
-            font-size: 2.5rem;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-        }
-        .hero p {
-            max-width: 540px;
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-        }
-        .btn {
-            padding: 12px 24px;
-            border: 1px solid var(--accent-color);
-            color: var(--accent-color);
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        .btn:hover {
-            background-color: rgba(100, 255, 218, 0.1);
+            
+            border-right: var(--glass-border);
+            box-shadow: 20px 0 40px rgba(0,0,0,0.2);
+            
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: hidden; /* 保持不滚动 */
+            flex-shrink: 0;
+            z-index: 100;
         }
 
-        /* --- 板块通用样式 --- */
-        .section-title {
+        /* 头像 */
+        .avatar {
+            width: 140px; /* 保持压缩后的尺寸 */
+            height: 140px; 
+            border-radius: 50%;
+            object-fit: cover;
+            /* 增加发光外圈 */
+            border: 2px solid rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+            margin: 0 auto 15px auto; 
+            transition: transform 0.5s ease;
+        }
+        .avatar:hover { transform: scale(1.05); }
+
+        /* 名字 */
+        .profile-name {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 5px; 
+            /* 文字渐变色 */
+            background: linear-gradient(120deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .profile-title {
+            font-size: 1.0rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 20px; 
+            font-weight: 400;
+            font-family: 'JetBrains Mono', monospace; /* 英文名用等宽字体 */
+        }
+
+        /* 信息块样式 */
+        .info-block { margin-bottom: 20px; }
+        
+        .info-header { 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            color: var(--accent-color); 
+            margin-bottom: 10px; 
+            font-weight: 700;
+            /* 标题下的渐变分割线 */
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2); 
+            padding-bottom: 4px;
+        }
+
+        .info-item {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px; 
+            display: flex;
+            align-items: flex-start;
+            line-height: 1.4;
+        }
+        .info-item:last-child { margin-bottom: 0; }
+
+        .info-item i { 
+            width: 20px; 
+            margin-right: 8px; 
+            margin-top: 4px; 
+            color: var(--text-primary); 
+            font-size: 0.95rem; 
+            opacity: 0.9;
+        }
+        
+        /* 强制覆盖 HTML 内联样式，确保统一美观 */
+        .info-content b { color: var(--text-primary); font-weight: 600; }
+        .info-content span { font-size: 0.85rem !important; opacity: 0.8; font-family: 'JetBrains Mono', monospace;}
+
+        /* --- 右侧主内容区 --- */
+        .main-content {
+            flex: 1;
+            padding: 70px 60px; /* 增加留白，显得更高级 */
+            z-index: 5; 
+        }
+
+        .section-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 35px;
+            margin-top: 50px;
+            color: var(--text-primary);
+            position: relative;
+            display: inline-block;
+        }
+        .section-header:first-child { margin-top: 0; }
+        /* 标题后的小装饰点 */
+        .section-header::after {
+            content: '.'; color: var(--accent-color);
+        }
+
+        /* 标签云优化 */
+        .tag-cloud { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .tag {
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--accent-color);
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            transition: all 0.3s;
+        }
+        .tag:hover {
+            background: rgba(56, 189, 248, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.2);
+        }
+
+        /* 项目卡片 - 悬浮质感 */
+        .project-item { 
+            margin-bottom: 30px; 
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: var(--glass-border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        /* 鼠标悬停发光 */
+        .project-item:hover { 
+            transform: translateY(-4px);
+            background: rgba(30, 41, 59, 0.5);
+            border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+        
+        .project-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;}
+        .project-title { font-weight: 700; font-size: 1.15rem; color: #f1f5f9; }
+        .project-tech { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent-color); background: rgba(0,0,0,0.2); padding: 3px 8px; border-radius: 4px; }
+        .project-desc { color: #cbd5e1; font-size: 0.95rem; text-align: justify; margin-bottom: 12px; line-height: 1.6; }
+        
+        .project-outcome {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            border-top: 1px dashed var(--border-color); /* 虚线分割 */
+            padding-top: 10px;
+            margin-top: 10px;
             display: flex;
             align-items: center;
-            font-size: 1.5rem;
-            color: #e6f1ff;
-            margin-bottom: 40px;
         }
-        .section-title::after {
-            content: "";
-            display: block;
-            width: 200px;
-            height: 1px;
-            background-color: #233554;
-            margin-left: 20px;
-        }
-        .section-title span { color: var(--accent-color); margin-right: 10px; font-family: monospace; font-size: 1.2rem;}
+        .project-outcome i { color: var(--accent-color); margin-right: 8px; }
 
-        /* --- Publications --- */
-        .pub-item {
-            margin-bottom: 30px;
+        /* 奖项列表 - 改为高级网格布局 */
+        .award-list { 
+            list-style: none; 
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* 自动排成多列 */
+            gap: 15px;
         }
-        .pub-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #e6f1ff;
+        .award-list li {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid transparent;
+            transition: all 0.3s;
         }
-        .pub-authors {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            margin: 5px 0;
+        .award-list li:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px); /* 悬停微微右移 */
         }
-        .pub-venue {
-            font-style: italic;
-            color: var(--accent-color);
-            font-size: 0.9rem;
-        }
-        .pub-links a {
-            font-size: 0.85rem;
-            font-family: monospace;
-            margin-right: 15px;
-            display: inline-block;
-            margin-top: 5px;
+        .award-name { color: #e2e8f0; font-weight: 500; font-size: 0.9rem; }
+        .award-year { 
+            font-family: 'JetBrains Mono', monospace; 
+            color: var(--accent-color); 
+            font-size: 0.8rem; 
+            background: rgba(56, 189, 248, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
         }
 
-        /* --- Footer --- */
-        footer {
+        /* 地图容器 */
+        .map-container {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
             text-align: center;
-            padding: 20px;
-            font-size: 0.8rem;
+        }
+        .map-placeholder {
+            border: 1px dashed var(--border-color);
+            padding: 30px;
             color: var(--text-secondary);
-            font-family: monospace;
+            font-size: 0.9rem;
+            background: rgba(0,0,0,0.1);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+        .map-placeholder:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
         }
 
         /* --- 响应式 --- */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .hero h2 { font-size: 1.8rem; }
-            .section-title::after { width: 100px; }
+        @media (max-width: 900px) {
+            .container { flex-direction: column; }
+            .sidebar { 
+                width: 100%; height: auto; 
+                position: relative; 
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                overflow-y: visible;
+                padding: 40px 20px;
+            }
+            .main-content { padding: 40px 20px; }
+            .award-list { grid-template-columns: 1fr; } /* 移动端单列显示 */
         }
     </style>
 </head>
@@ -166,106 +297,192 @@
     <canvas id="canvas-bg"></canvas>
 
     <div class="container">
-        <nav>
-            <div class="logo">H.Zhu</div>
-            <div class="nav-links">
-                <a href="#about">About</a>
-                <a href="#publications">Publications</a>
-                <a href="#projects">Projects</a>
-                <a href="#contact">Contact</a>
-            </div>
-        </nav>
+        <aside class="sidebar">
+            <img src="1.jpg" alt="Haohang Zhu" class="avatar">
+            
+            <div class="profile-name">朱浩航</div>
+            <div class="profile-title">Haohang Zhu</div>
 
-        <section class="hero">
-            <p style="color: var(--accent-color); font-family: monospace;">Hi, my name is</p>
-            <h1>Haohang Zhu.</h1>
-            <h2>I explore the ocean with AI.</h2>
-            <p>
-                I am a Ph.D. candidate specializing in <b>AI for Ocean Science</b> and <b>Graph Neural Networks</b>.
-                My current research focuses on modeling chemical distributions in the Pacific Ocean using deep learning techniques.
-            </p>
-            <a href="#publications" class="btn">Check my Research</a>
-        </section>
-
-        <section id="about">
-            <h3 class="section-title"><span>01.</span>About Me</h3>
-            <div style="display: flex; gap: 40px; flex-wrap: wrap;">
-                <div style="flex: 3; min-width: 300px;">
-                    <p>
-                        Hello! My name is Haohang and I enjoy building intelligent systems to understand our blue planet.
-                        My journey started with rigorous computer science training and evolved into a passion for oceanography.
-                    </p>
-                    <p>
-                        Currently, I am working on <span style="color: var(--accent-color)">Time-series Analysis</span> and
-                        <span style="color: var(--accent-color)">Spatial-Temporal Modeling</span> for ocean data.
-                        I mainly use Python (PyTorch) and work extensively with NetCDF data.
-                    </p>
-                    <br>
-                    <p>Here are a few technologies I've been working with recently:</p>
-                    <ul style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; font-family: monospace; font-size: 0.9rem;">
-                        <li>▹ Python (PyTorch)</li>
-                        <li>▹ Graph Neural Networks</li>
-                        <li>▹ Transformers</li>
-                        <li>▹ Ocean Data View (ODV)</li>
-                        <li>▹ Linux / Bash</li>
-                        <li>▹ XGBoost</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section id="publications">
-            <h3 class="section-title"><span>02.</span>Selected Publications</h3>
-
-            <div class="pub-item">
-                <div class="pub-title">Deep Learning for Lead (Pb) Concentration Prediction in the Pacific Ocean</div>
-                <div class="pub-authors"><b>Haohang Zhu</b>, Co-author Name, Advisor Name</div>
-                <div class="pub-venue">Journal of Geophysical Research: Oceans (Under Review), 2026</div>
-                <div class="pub-links">
-                    <a href="#">[PDF]</a>
-                    <a href="#">[Code]</a>
-                    <a href="#">[Data]</a>
-                </div>
-            </div>
-
-            <div class="pub-item">
-                <div class="pub-title">Spatio-Temporal Graph Convolutional Networks for Ocean Current Forecasting</div>
-                <div class="pub-authors"><b>Haohang Zhu</b>, Co-author Name</div>
-                <div class="pub-venue">ICLR Workshop on AI for Earth Sciences, 2025</div>
-                <div class="pub-links">
-                    <a href="#">[PDF]</a>
-                    <a href="#">[Code]</a>
-                </div>
-            </div>
-        </section>
-
-        <section id="projects">
-            <h3 class="section-title"><span>03.</span>Projects</h3>
-            <div style="background-color: var(--card-bg); padding: 20px; border-radius: 4px; margin-bottom: 20px;">
-                <h4 style="color: #e6f1ff; margin-bottom: 10px;">PbModel: 18-token Transformer</h4>
-                <p style="font-size: 0.9rem; color: var(--text-secondary);">
-                    A specialized Transformer architecture designed to capture the vertical and horizontal distribution of Lead concentration.
-                    Includes a custom implementation of Spatial Dropout and Hypernetworks.
+            <div class="info-block" style="text-align: center; margin-bottom: 30px;">
+                <p style="color: var(--text-secondary); font-size: 1.0rem; line-height: 1.5; font-weight: 500;">
+                Future works on AI4Ocean & GNN
                 </p>
-                <div style="margin-top: 15px; font-family: monospace; font-size: 0.8rem; color: var(--text-secondary);">
-                    PyTorch · xArray · NetCDF
+            </div>
+
+            <div class="info-block">
+                <div class="info-header">Education</div>
+                <div class="info-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div class="info-content">
+                        <b>Ph.D. Student</b> <span>(Incoming 2026)</span><br>
+                        <span>Shanghai Jiao Tong University</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-university"></i>
+                    <div class="info-content">
+                        <b>Undergraduate</b> <span>(2022-2026)</span><br>
+                        <span>Beijing Institute of Technology</span>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <section id="contact" style="text-align: center; margin-top: 50px;">
-            <p style="color: var(--accent-color); font-family: monospace; font-size: 1.1rem;">04. What's Next?</p>
-            <h2 style="font-size: 3rem; color: #e6f1ff; margin: 10px 0;">Get In Touch</h2>
-            <p style="max-width: 600px; margin: 0 auto 40px auto; color: var(--text-secondary);">
-                I am currently looking for collaboration opportunities in AI for Science.
-                Whether you have a question about my code or just want to say hi, I'll try my best to get back to you!
-            </p>
-            <a href="mailto:your.email@university.edu" class="btn">Say Hello</a>
-        </section>
+            <div class="info-block">
+                <div class="info-header">Scholarships</div>
+                
+                <div class="info-item">
+                    <i class="fas fa-trophy" style="color: #fbbf24;"></i> <div class="info-content">
+                        <b>National Scholarship</b> <span>(2025)</span>
+                    </div>
+                </div>
+            
+                <div class="info-item">
+                    <i class="fas fa-medal"></i>
+                    <div class="info-content">
+                        <b>Diwen Scholarship</b> <span>(2024)</span>
+                    </div>
+                </div>
+            
+                <div class="info-item">
+                    <i class="fas fa-star"></i>
+                    <div class="info-content">
+                        <b>Xiaomi Scholarship</b> <span>(2023)</span>
+                    </div>
+                </div>
+            </div>      
+            
+            <div class="info-block">
+                <div class="info-header">Contact</div>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <div class="info-content">
+                        <a href="mailto:zhuhaohang@sjtu.edu.cn">zhuhaohang@sjtu.edu.cn</a>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fab fa-github"></i>
+                    <div class="info-content">
+                        <a href="#">github.com/zhuhaohang662-collab</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
 
-        <footer>
-            <p>Designed & Built by Haohang Zhu</p>
-        </footer>
+        <main class="main-content">
+            
+            <section>
+                <h2 class="section-header">Research Interests</h2>
+                <p style="margin-bottom: 20px; color: var(--text-secondary); font-size: 1.05rem;">
+                    My research lies at the intersection of <b style="color:#f1f5f9">Artificial Intelligence</b> and <b style="color:#f1f5f9">Ocean Science (AI4Ocean)</b>. 
+                    I am actively exploring <b>Graph Neural Networks (GNN)</b> to model dynamic ocean systems, focusing on spatio-temporal data mining and physics-informed deep learning.
+                </p>
+                <div class="tag-cloud">
+                    <span class="tag">AI for Science</span>
+                    <span class="tag">GNN for Dynamic</span>
+                    <span class="tag">Spatio-Temporal Modeling</span>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-header">Projects</h2>
+
+                <div class="project-item">
+                    <div class="project-head">
+                        <div class="project-title">Geometric Modeling & Decision Support for Road Damage Assessment</div>
+                        <div class="project-tech">CV · 3D Reconstruction · Decision Tree</div>
+                    </div>
+                    <div class="project-desc">
+                        Designed a monocular vision system to estimate pothole areas by integrating ZoeDepth for metric depth estimation and Pinhole Camera Models. 
+                        Further developed a decision support system for autonomous driving maintenance strategies based on the geometric analysis.
+                    </div>
+					<div class="project-outcome">
+						<i class="fas fa-file-alt"></i>
+						<span>
+							<b>Outcomes:</b> 1 Paper Submitted to <i>IEEE T-ITS</i> (arXiv:2505.21049) & 1 Paper Accepted by <i>IEEE ICSIDP 2024 (EI)</i>
+						</span>
+					</div>		
+				</div>						
+                <div class="project-item">
+                    <div class="project-head">
+                        <div class="project-title">Robust Small Target Detection via Multi-Sensor Fusion</div>
+                        <div class="project-tech"> Multimodal Feature Fusion · YOLO · Radar Signal Processing</div>
+                    </div>
+                    <div class="project-desc">
+                        Developed a hierarchical fusion architecture (Data, Feature, Decision levels) combining Infrared and Microwave Radar data. 
+                        Improved YOLO algorithm and optimized CFAR algorithm to achieve high-precision detection of small targets under complex interference.
+                    </div>
+                    <div class="project-outcome">
+                        <i class="fas fa-trophy"></i> <b>Award:</b> National 3rd Prize in "Challenge Cup" Special Competition
+                    </div>
+                </div>
+
+            </section>
+
+            <section>
+                <h2 class="section-header">Awards</h2>
+                <ul class="award-list">
+                    <li>
+                        <span class="award-name">校优秀学生干部</span>
+                        <span class="award-year">2025</span>
+                    </li>
+                    <li>
+                        <span class="award-name">五四优秀团员</span>
+                        <span class="award-year">2025</span>
+                    </li>
+                    <li>
+                        <span class="award-name">校优秀学生</span>
+                        <span class="award-year">2024</span>
+                    </li>
+                    <li>
+                        <span class="award-name">校优秀学习标兵</span>
+                        <span class="award-year">2023</span>
+                    </li>
+                    <li>
+                        <span class="award-name">MathorCup数学建模挑战赛 全国一等奖</span>
+                        <span class="award-year">2024</span>
+                    </li>
+                    <li>
+                        <span class="award-name">第19届挑战杯“揭榜挂帅”专项赛 全国三等奖</span>
+                        <span class="award-year">2024</span>
+                    </li>
+                    <li>
+                        <span class="award-name">北京市统计建模竞赛 二等奖</span>
+                        <span class="award-year">2023</span>
+                    </li>
+                    <li>
+                        <span class="award-name">全国大学生英语翻译大赛 北京市一等奖</span>
+                        <span class="award-year">2023</span>
+                    </li>
+                    <li>
+                        <span class="award-name">北京市大学生数学竞赛 三等奖</span>
+                        <span class="award-year">2023</span>
+                    </li>
+				    <li>
+                        <span class="award-name">部分地区大学生物理竞赛 三等奖</span>
+                        <span class="award-year">2023</span>
+                    </li>
+
+                </ul>
+            </section>
+            
+            <section class="map-container">
+                <p style="color: var(--text-secondary); margin-bottom: 10px; font-size: 0.85rem; letter-spacing: 2px;">VISITOR MAP</p>
+                
+                <section class="map-container">
+                <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.85rem; letter-spacing: 2px; font-weight: 700;">GLOBAL VISITS</p>
+                
+                <div style="opacity: 0.85; filter: grayscale(30%); transition: all 0.5s ease; mix-blend-mode: lighten;" 
+                     onmouseover="this.style.filter='grayscale(0%)'; this.style.opacity='1'" 
+                     onmouseout="this.style.filter='grayscale(30%)'; this.style.opacity='0.85'">
+                    
+                    <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=ur9t9Tqp78ZeTvpLrDJba1enO4izPyyqqq_LcQE2xPY&cl=ffffff&w=a"></script>
+                    
+                </div>
+            </section>
+
+         
+
+        </main>
     </div>
 
     <script>
@@ -273,8 +490,13 @@
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
+        let mouse = { x: null, y: null, radius: 150 };
 
-        // 调整 Canvas 大小
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+
         function resize() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
@@ -282,49 +504,70 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // 粒子类
         class Particle {
             constructor() {
                 this.x = Math.random() * width;
                 this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.5; // 速度慢一点，像洋流
-                this.vy = (Math.random() - 0.5) * 0.5;
+                this.vx = (Math.random() - 0.5) * 0.3; 
+                this.vy = (Math.random() - 0.5) * 0.3;
                 this.size = Math.random() * 2 + 1;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = (Math.random() * 30) + 1;
             }
             update() {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx*dx + dy*dy);
+                let forceDirectionX = dx / distance;
+                let forceDirectionY = dy / distance;
+                let maxDistance = mouse.radius;
+                let force = (maxDistance - distance) / maxDistance;
+                let directionX = forceDirectionX * force * this.density;
+                let directionY = forceDirectionY * force * this.density;
+
+                if (distance < mouse.radius) {
+                    this.x -= directionX;
+                    this.y -= directionY;
+                } else {
+                    if (this.x !== this.baseX) {
+                        let dx = this.x - this.baseX;
+                        this.x -= dx/20;
+                    }
+                    if (this.y !== this.baseY) {
+                        let dy = this.y - this.baseY;
+                        this.y -= dy/20;
+                    }
+                }
+
                 this.x += this.vx;
                 this.y += this.vy;
-                // 边界检查
+
                 if (this.x < 0 || this.x > width) this.vx *= -1;
                 if (this.y < 0 || this.y > height) this.vy *= -1;
             }
             draw() {
-                ctx.fillStyle = 'rgba(100, 255, 218, 0.3)'; // 科技青色
+                ctx.fillStyle = 'rgba(56, 189, 248, 0.5)';
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
 
-        // 初始化粒子
         function init() {
             particles = [];
-            const particleCount = Math.floor(window.innerWidth / 10); // 根据屏幕宽度决定数量
+            const particleCount = Math.floor(window.innerWidth / 12); 
             for (let i = 0; i < particleCount; i++) {
                 particles.push(new Particle());
             }
         }
 
-        // 动画循环
         function animate() {
             ctx.clearRect(0, 0, width, height);
-
-            // 绘制粒子和连线（模拟 Graph）
             for (let i = 0; i < particles.length; i++) {
                 particles[i].update();
                 particles[i].draw();
-
-                // 如果粒子距离够近，就连线
+                
                 for (let j = i; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
@@ -332,7 +575,7 @@
 
                     if (distance < 100) {
                         ctx.beginPath();
-                        ctx.strokeStyle = `rgba(136, 146, 176, ${0.1 - distance/1000})`; // 距离越远越淡
+                        ctx.strokeStyle = `rgba(56, 189, 248, ${0.12 - distance/1000})`;
                         ctx.lineWidth = 0.5;
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
