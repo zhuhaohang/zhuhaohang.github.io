@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haohang Zhu | AI for Ocean</title>
+    <style>
+        /* --- 全局变量与重置 --- */
+        :root {
+            --bg-color: #0a192f; /* 深海蓝背景 */
+            --text-primary: #ccd6f6;
+            --text-secondary: #8892b0;
+            --accent-color: #64ffda; /* 科技青，用于强调 */
+            --card-bg: #112240;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        a:hover { color: var(--accent-color); }
+
+        /* --- 布局组件 --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10; /* 确保内容在Canvas之上 */
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        /* --- 导航栏 --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--accent-color); }
+        .nav-links a { margin-left: 20px; font-size: 0.9rem; color: var(--text-primary); }
+        .nav-links a:hover { color: var(--accent-color); }
+
+        /* --- Canvas 背景 --- */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* 在最底层 */
+            opacity: 0.4;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .hero h1 {
+            font-size: 4rem;
+            color: #e6f1ff;
+            margin-bottom: 10px;
+        }
+        .hero h2 {
+            font-size: 2.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .hero p {
+            max-width: 540px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .btn:hover {
+            background-color: rgba(100, 255, 218, 0.1);
+        }
+
+        /* --- 板块通用样式 --- */
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            color: #e6f1ff;
+            margin-bottom: 40px;
+        }
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 200px;
+            height: 1px;
+            background-color: #233554;
+            margin-left: 20px;
+        }
+        .section-title span { color: var(--accent-color); margin-right: 10px; font-family: monospace; font-size: 1.2rem;}
+
+        /* --- Publications --- */
+        .pub-item {
+            margin-bottom: 30px;
+        }
+        .pub-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e6f1ff;
+        }
+        .pub-authors {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 5px 0;
+        }
+        .pub-venue {
+            font-style: italic;
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+        .pub-links a {
+            font-size: 0.85rem;
+            font-family: monospace;
+            margin-right: 15px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-family: monospace;
+        }
+
+        /* --- 响应式 --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero h2 { font-size: 1.8rem; }
+            .section-title::after { width: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-bg"></canvas>
+
+    <div class="container">
+        <nav>
+            <div class="logo">H.Zhu</div>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#publications">Publications</a>
+                <a href="#projects">Projects</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <p style="color: var(--accent-color); font-family: monospace;">Hi, my name is</p>
+            <h1>Haohang Zhu.</h1>
+            <h2>I explore the ocean with AI.</h2>
+            <p>
+                I am a Ph.D. candidate specializing in <b>AI for Ocean Science</b> and <b>Graph Neural Networks</b>.
+                My current research focuses on modeling chemical distributions in the Pacific Ocean using deep learning techniques.
+            </p>
+            <a href="#publications" class="btn">Check my Research</a>
+        </section>
+
+        <section id="about">
+            <h3 class="section-title"><span>01.</span>About Me</h3>
+            <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+                <div style="flex: 3; min-width: 300px;">
+                    <p>
+                        Hello! My name is Haohang and I enjoy building intelligent systems to understand our blue planet.
+                        My journey started with rigorous computer science training and evolved into a passion for oceanography.
+                    </p>
+                    <p>
+                        Currently, I am working on <span style="color: var(--accent-color)">Time-series Analysis</span> and
+                        <span style="color: var(--accent-color)">Spatial-Temporal Modeling</span> for ocean data.
+                        I mainly use Python (PyTorch) and work extensively with NetCDF data.
+                    </p>
+                    <br>
+                    <p>Here are a few technologies I've been working with recently:</p>
+                    <ul style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; font-family: monospace; font-size: 0.9rem;">
+                        <li>▹ Python (PyTorch)</li>
+                        <li>▹ Graph Neural Networks</li>
+                        <li>▹ Transformers</li>
+                        <li>▹ Ocean Data View (ODV)</li>
+                        <li>▹ Linux / Bash</li>
+                        <li>▹ XGBoost</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="publications">
+            <h3 class="section-title"><span>02.</span>Selected Publications</h3>
+
+            <div class="pub-item">
+                <div class="pub-title">Deep Learning for Lead (Pb) Concentration Prediction in the Pacific Ocean</div>
+                <div class="pub-authors"><b>Haohang Zhu</b>, Co-author Name, Advisor Name</div>
+                <div class="pub-venue">Journal of Geophysical Research: Oceans (Under Review), 2026</div>
+                <div class="pub-links">
+                    <a href="#">[PDF]</a>
+                    <a href="#">[Code]</a>
+                    <a href="#">[Data]</a>
+                </div>
+            </div>
+
+            <div class="pub-item">
+                <div class="pub-title">Spatio-Temporal Graph Convolutional Networks for Ocean Current Forecasting</div>
+                <div class="pub-authors"><b>Haohang Zhu</b>, Co-author Name</div>
+                <div class="pub-venue">ICLR Workshop on AI for Earth Sciences, 2025</div>
+                <div class="pub-links">
+                    <a href="#">[PDF]</a>
+                    <a href="#">[Code]</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects">
+            <h3 class="section-title"><span>03.</span>Projects</h3>
+            <div style="background-color: var(--card-bg); padding: 20px; border-radius: 4px; margin-bottom: 20px;">
+                <h4 style="color: #e6f1ff; margin-bottom: 10px;">PbModel: 18-token Transformer</h4>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                    A specialized Transformer architecture designed to capture the vertical and horizontal distribution of Lead concentration.
+                    Includes a custom implementation of Spatial Dropout and Hypernetworks.
+                </p>
+                <div style="margin-top: 15px; font-family: monospace; font-size: 0.8rem; color: var(--text-secondary);">
+                    PyTorch · xArray · NetCDF
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" style="text-align: center; margin-top: 50px;">
+            <p style="color: var(--accent-color); font-family: monospace; font-size: 1.1rem;">04. What's Next?</p>
+            <h2 style="font-size: 3rem; color: #e6f1ff; margin: 10px 0;">Get In Touch</h2>
+            <p style="max-width: 600px; margin: 0 auto 40px auto; color: var(--text-secondary);">
+                I am currently looking for collaboration opportunities in AI for Science.
+                Whether you have a question about my code or just want to say hi, I'll try my best to get back to you!
+            </p>
+            <a href="mailto:your.email@university.edu" class="btn">Say Hello</a>
+        </section>
+
+        <footer>
+            <p>Designed & Built by Haohang Zhu</p>
+        </footer>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        // 调整 Canvas 大小
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // 粒子类
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5; // 速度慢一点，像洋流
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                // 边界检查
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(100, 255, 218, 0.3)'; // 科技青色
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // 初始化粒子
+        function init() {
+            particles = [];
+            const particleCount = Math.floor(window.innerWidth / 10); // 根据屏幕宽度决定数量
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        // 动画循环
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+
+            // 绘制粒子和连线（模拟 Graph）
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                // 如果粒子距离够近，就连线
+                for (let j = i; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(136, 146, 176, ${0.1 - distance/1000})`; // 距离越远越淡
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+    </script>
+</body>
+</html>
