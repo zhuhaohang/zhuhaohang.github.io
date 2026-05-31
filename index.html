@@ -1,591 +1,455 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haohang Zhu | AI for Science</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        /* --- 全局变量与配色 (高级深海蓝) --- */
-        :root {
-            --bg-color: #0b1120;      /* 更深邃的蓝黑底色 */
-            --sidebar-bg: rgba(30, 41, 59, 0.6); /* 磨砂玻璃底色 */
-            --card-bg: rgba(30, 41, 59, 0.3);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent-color: #38bdf8;  /* 科技蓝 */
-            --border-color: rgba(255, 255, 255, 0.08);
-            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Haohang Zhu's personal academic homepage. Current research interests center on AI4Ocean.">
+  <title>Haohang Zhu | AI for Ocean Science</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --paper: #ffffff;
+      --ink: #1b2430;
+      --muted: #647083;
+      --line: #dde3ee;
+      --accent: #0f5c6d;
+      --accent-2: #9f7732;
+      --soft: #eef6f6;
+      --shadow: 0 24px 70px rgba(29, 40, 58, 0.13);
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            /* 背景增加深海光晕，提升氛围感 */
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 25%);
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
-        a:hover { color: var(--accent-color); }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        /* --- Canvas 背景 --- */
-        #canvas-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; opacity: 0.5; pointer-events: none;
-        }
+    body {
+      margin: 0;
+      background:
+        linear-gradient(90deg, rgba(15, 92, 109, 0.075), transparent 44%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.68), transparent 260px),
+        var(--bg);
+      color: var(--ink);
+      font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+      font-size: 16px;
+      line-height: 1.68;
+    }
 
-        /* --- 主容器 --- */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            min-height: 100vh;
-        }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
 
-        /* --- 左侧侧边栏 (高级磨砂质感) --- */
-        .sidebar {
-            width: 360px; /* 保持你要求的宽度 */
-            
-            /* 磨砂玻璃效果 */
-            background: var(--sidebar-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            
-            padding: 30px 25px; /* 保持压缩的内边距 */
-            display: flex;
-            flex-direction: column;
-            
-            border-right: var(--glass-border);
-            box-shadow: 20px 0 40px rgba(0,0,0,0.2);
-            
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow-y: hidden; /* 保持不滚动 */
-            flex-shrink: 0;
-            z-index: 100;
-        }
+    a:hover {
+      text-decoration: underline;
+    }
 
-        /* 头像 */
-        .avatar {
-            width: 140px; /* 保持压缩后的尺寸 */
-            height: 140px; 
-            border-radius: 50%;
-            object-fit: cover;
-            /* 增加发光外圈 */
-            border: 2px solid rgba(56, 189, 248, 0.5);
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
-            margin: 0 auto 15px auto; 
-            transition: transform 0.5s ease;
-        }
-        .avatar:hover { transform: scale(1.05); }
+    .site {
+      width: min(1180px, calc(100% - 40px));
+      margin: 36px auto;
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
 
-        /* 名字 */
-        .profile-name {
-            font-size: 1.8rem;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 5px; 
-            /* 文字渐变色 */
-            background: linear-gradient(120deg, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .profile-title {
-            font-size: 1.0rem;
-            color: var(--text-secondary);
-            text-align: center;
-            margin-bottom: 20px; 
-            font-weight: 400;
-            font-family: 'JetBrains Mono', monospace; /* 英文名用等宽字体 */
-        }
+    .profile {
+      position: sticky;
+      top: 28px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      backdrop-filter: blur(18px);
+    }
 
-        /* 信息块样式 */
-        .info-block { margin-bottom: 20px; }
-        
-        .info-header { 
-            font-size: 0.85rem; 
-            text-transform: uppercase; 
-            letter-spacing: 2px; 
-            color: var(--accent-color); 
-            margin-bottom: 10px; 
-            font-weight: 700;
-            /* 标题下的渐变分割线 */
-            border-bottom: 1px solid rgba(56, 189, 248, 0.2); 
-            padding-bottom: 4px;
-        }
+    .avatar {
+      width: 148px;
+      height: 148px;
+      margin: 0 auto 20px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #176b87, #2e495f);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 2.4rem;
+      font-weight: 750;
+      letter-spacing: 0;
+    }
 
-        .info-item {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 8px; 
-            display: flex;
-            align-items: flex-start;
-            line-height: 1.4;
-        }
-        .info-item:last-child { margin-bottom: 0; }
+    .avatar::after {
+      content: "HZ";
+    }
 
-        .info-item i { 
-            width: 20px; 
-            margin-right: 8px; 
-            margin-top: 4px; 
-            color: var(--text-primary); 
-            font-size: 0.95rem; 
-            opacity: 0.9;
-        }
-        
-        /* 强制覆盖 HTML 内联样式，确保统一美观 */
-        .info-content b { color: var(--text-primary); font-weight: 600; }
-        .info-content span { font-size: 0.85rem !important; opacity: 0.8; font-family: 'JetBrains Mono', monospace;}
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
 
-        /* --- 右侧主内容区 --- */
-        .main-content {
-            flex: 1;
-            padding: 70px 60px; /* 增加留白，显得更高级 */
-            z-index: 5; 
-        }
+    .avatar:has(img)::after {
+      content: "";
+    }
 
-        .section-header {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 35px;
-            margin-top: 50px;
-            color: var(--text-primary);
-            position: relative;
-            display: inline-block;
-        }
-        .section-header:first-child { margin-top: 0; }
-        /* 标题后的小装饰点 */
-        .section-header::after {
-            content: '.'; color: var(--accent-color);
-        }
+    .profile h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 1.9rem;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
 
-        /* 标签云优化 */
-        .tag-cloud { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-        .tag {
-            background: rgba(56, 189, 248, 0.08);
-            color: var(--accent-color);
-            padding: 5px 14px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-family: 'JetBrains Mono', monospace;
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            transition: all 0.3s;
-        }
-        .tag:hover {
-            background: rgba(56, 189, 248, 0.2);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.2);
-        }
+    .name-cn {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 500;
+    }
 
-        /* 项目卡片 - 悬浮质感 */
-        .project-item { 
-            margin-bottom: 30px; 
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            border: var(--glass-border);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        /* 鼠标悬停发光 */
-        .project-item:hover { 
-            transform: translateY(-4px);
-            background: rgba(30, 41, 59, 0.5);
-            border-color: rgba(56, 189, 248, 0.3);
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
-        }
-        
-        .project-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;}
-        .project-title { font-weight: 700; font-size: 1.15rem; color: #f1f5f9; }
-        .project-tech { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent-color); background: rgba(0,0,0,0.2); padding: 3px 8px; border-radius: 4px; }
-        .project-desc { color: #cbd5e1; font-size: 0.95rem; text-align: justify; margin-bottom: 12px; line-height: 1.6; }
-        
-        .project-outcome {
-            font-size: 0.85rem;
-            color: #94a3b8;
-            border-top: 1px dashed var(--border-color); /* 虚线分割 */
-            padding-top: 10px;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-        }
-        .project-outcome i { color: var(--accent-color); margin-right: 8px; }
+    .tagline {
+      margin: 16px 0 22px;
+      padding: 12px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
 
-        /* 奖项列表 - 改为高级网格布局 */
-        .award-list { 
-            list-style: none; 
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* 自动排成多列 */
-            gap: 15px;
-        }
-        .award-list li {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid transparent;
-            transition: all 0.3s;
-        }
-        .award-list li:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px); /* 悬停微微右移 */
-        }
-        .award-name { color: #e2e8f0; font-weight: 500; font-size: 0.9rem; }
-        .award-year { 
-            font-family: 'JetBrains Mono', monospace; 
-            color: var(--accent-color); 
-            font-size: 0.8rem; 
-            background: rgba(56, 189, 248, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
+    .profile-section {
+      margin-top: 22px;
+    }
 
-        /* 地图容器 */
-        .map-container {
-            margin-top: 80px;
-            padding-top: 40px;
-            border-top: 1px solid var(--border-color);
-            text-align: center;
-        }
-        .map-placeholder {
-            border: 1px dashed var(--border-color);
-            padding: 30px;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            background: rgba(0,0,0,0.1);
-            border-radius: 12px;
-            transition: all 0.3s;
-        }
-        .map-placeholder:hover {
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
+    .profile-section h2,
+    .content-section h2 {
+      margin: 0 0 12px;
+      color: var(--accent);
+      font-size: 0.85rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
 
-        /* --- 响应式 --- */
-        @media (max-width: 900px) {
-            .container { flex-direction: column; }
-            .sidebar { 
-                width: 100%; height: auto; 
-                position: relative; 
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-                overflow-y: visible;
-                padding: 40px 20px;
-            }
-            .main-content { padding: 40px 20px; }
-            .award-list { grid-template-columns: 1fr; } /* 移动端单列显示 */
-        }
-    </style>
+    .profile-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .profile-list strong {
+      display: block;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .nav {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .nav a {
+      border: 1px solid var(--line);
+      padding: 8px 10px;
+      color: var(--ink);
+      text-align: center;
+      font-size: 0.9rem;
+      background: #fbfcfe;
+    }
+
+    .nav a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .content {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 46px 54px;
+      backdrop-filter: blur(18px);
+    }
+
+    .hero {
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero h2 {
+      margin: 0;
+      max-width: 100%;
+      font-size: clamp(2.6rem, 5vw, 4.15rem);
+      line-height: 1;
+      letter-spacing: 0;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .hero p {
+      max-width: 700px;
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .content-section {
+      padding: 34px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .content-section:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .content-section p {
+      margin: 0 0 15px;
+      color: var(--muted);
+    }
+
+    .project {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 150px;
+      gap: 22px;
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .project:first-of-type {
+      padding-top: 8px;
+      border-top: 0;
+    }
+
+    .project h3 {
+      margin: 0 0 8px;
+      font-size: 1.14rem;
+      line-height: 1.35;
+    }
+
+    .project p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      text-align: justify;
+    }
+
+    .project-meta {
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .outcome {
+      color: #445164;
+      font-size: 0.92rem;
+    }
+
+    .award-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .award-grid li {
+      border: 1px solid var(--line);
+      padding: 15px 16px;
+      background: #fbfcfe;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .award-grid span:first-child {
+      color: var(--ink);
+      font-weight: 620;
+    }
+
+    .award-grid span:last-child {
+      color: var(--accent-2);
+      font-weight: 760;
+      white-space: nowrap;
+    }
+
+    .visit-map {
+      margin-top: 14px;
+      min-height: 130px;
+      border: 1px dashed var(--line);
+      background: #fbfcfe;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    footer {
+      padding-top: 24px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 900px) {
+      .site {
+        width: min(100% - 28px, 680px);
+        grid-template-columns: 1fr;
+        margin: 18px auto;
+      }
+
+      .profile {
+        position: static;
+      }
+
+      .content {
+        padding: 32px 24px;
+      }
+
+      .award-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h2 {
+        font-size: clamp(1.7rem, 8vw, 3rem);
+      }
+
+      .project {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .project-meta {
+        text-align: left;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="site">
+    <aside class="profile" aria-label="Profile">
+      <div class="avatar">
+        <img src="1.jpg" alt="Haohang Zhu" onerror="this.remove()">
+      </div>
+      <h1>
+        Haohang Zhu
+        <span class="name-cn">朱浩航</span>
+      </h1>
+      <p class="tagline">AI for Ocean Science / AI4Ocean</p>
 
-    <canvas id="canvas-bg"></canvas>
+      <section class="profile-section">
+        <h2>Education</h2>
+        <ul class="profile-list">
+          <li>
+            <strong>Shanghai Jiao Tong University</strong>
+            Ph.D. Student, Incoming 2026
+          </li>
+          <li>
+            <strong>Beijing Institute of Technology</strong>
+            Undergraduate, 2022-2026
+          </li>
+        </ul>
+      </section>
 
-    <div class="container">
-        <aside class="sidebar">
-            <img src="1.jpg" alt="Haohang Zhu" class="avatar">
-            
-            <div class="profile-name">朱浩航</div>
-            <div class="profile-title">Haohang Zhu</div>
+      <section class="profile-section">
+        <h2>Selected Honors</h2>
+        <ul class="profile-list">
+          <li><strong>Beijing Outstanding Graduate</strong> 2026</li>
+          <li><strong>National Scholarship</strong> 2025</li>
+          <li><strong>Diwen Scholarship</strong> 2024</li>
+          <li><strong>Xiaomi Scholarship</strong> 2023</li>
+        </ul>
+      </section>
 
-            <div class="info-block" style="text-align: center; margin-bottom: 30px;">
-                <p style="color: var(--text-secondary); font-size: 1.0rem; line-height: 1.5; font-weight: 500;">
-                Future works on AI4Ocean & GNN
-                </p>
+      <section class="profile-section">
+        <h2>Contact</h2>
+        <ul class="profile-list">
+          <li>
+            <strong>Email</strong>
+            <a href="mailto:zhuhaohang@sjtu.edu.cn">zhuhaohang@sjtu.edu.cn</a>
+          </li>
+          <li>
+            <strong>GitHub</strong>
+            <a href="https://github.com/zhuhaohang">github.com/zhuhaohang</a>
+          </li>
+        </ul>
+      </section>
+
+      <nav class="nav" aria-label="Page sections">
+        <a href="#bio">Bio</a>
+        <a href="#projects">Projects</a>
+        <a href="#awards">Awards</a>
+        <a href="#visits">Visits</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section class="hero" id="bio">
+        <h2>AI4Ocean Research</h2>
+        <p>
+          I am an incoming Ph.D. student at Shanghai Jiao Tong University. My current research interests center on AI4Ocean, using artificial intelligence to understand complex ocean systems.
+        </p>
+      </section>
+
+      <section class="content-section" id="projects">
+        <h2>Projects</h2>
+
+        <article class="project">
+          <div>
+            <h3>Geometric Modeling and Decision Support for Road Damage Assessment</h3>
+            <p>
+              Designed a monocular vision system to estimate pothole areas by integrating ZoeDepth for metric depth estimation with pinhole camera models. Further developed a decision support module for autonomous-driving maintenance strategies based on geometric analysis.
+            </p>
+            <div class="outcome">
+              Outcomes: 1 paper submitted to <i>IEEE Transactions on Intelligent Transportation Systems</i> (arXiv:2505.21049) and 1 paper accepted by <i>IEEE ICSIDP 2024</i> (EI).
             </div>
+          </div>
+          <div class="project-meta">Computer Vision<br>3D Reconstruction<br>Decision Support</div>
+        </article>
 
-            <div class="info-block">
-                <div class="info-header">Education</div>
-                <div class="info-item">
-                    <i class="fas fa-graduation-cap"></i>
-                    <div class="info-content">
-                        <b>Ph.D. Student</b> <span>(Incoming 2026)</span><br>
-                        <span>Shanghai Jiao Tong University</span>
-                    </div>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-university"></i>
-                    <div class="info-content">
-                        <b>Undergraduate</b> <span>(2022-2026)</span><br>
-                        <span>Beijing Institute of Technology</span>
-                    </div>
-                </div>
+        <article class="project">
+          <div>
+            <h3>Robust Small Target Detection via Multi-Sensor Fusion</h3>
+            <p>
+              Developed a hierarchical fusion architecture across data, feature, and decision levels by combining infrared and microwave radar data. Improved the YOLO pipeline and optimized the CFAR algorithm for small-target detection under complex interference.
+            </p>
+            <div class="outcome">
+              Award: National Third Prize in the Challenge Cup Special Competition.
             </div>
+          </div>
+          <div class="project-meta">Multi-Modal Fusion<br>YOLO<br>Radar Signal Processing</div>
+        </article>
+      </section>
 
-            <div class="info-block">
-                <div class="info-header">Scholarships</div>
-                
-                <div class="info-item">
-                    <i class="fas fa-trophy" style="color: #fbbf24;"></i> <div class="info-content">
-                        <b>National Scholarship</b> <span>(2025)</span>
-                    </div>
-                </div>
-            
-                <div class="info-item">
-                    <i class="fas fa-medal"></i>
-                    <div class="info-content">
-                        <b>Diwen Scholarship</b> <span>(2024)</span>
-                    </div>
-                </div>
-            
-                <div class="info-item">
-                    <i class="fas fa-star"></i>
-                    <div class="info-content">
-                        <b>Xiaomi Scholarship</b> <span>(2023)</span>
-                    </div>
-                </div>
-            </div>      
-            
-            <div class="info-block">
-                <div class="info-header">Contact</div>
-                <div class="info-item">
-                    <i class="fas fa-envelope"></i>
-                    <div class="info-content">
-                        <a href="mailto:zhuhaohang@sjtu.edu.cn">zhuhaohang@sjtu.edu.cn</a>
-                    </div>
-                </div>
-                <div class="info-item">
-                    <i class="fab fa-github"></i>
-                    <div class="info-content">
-                        <a href="#">github.com/zhuhaohang</a>
-                    </div>
-                </div>
-            </div>
-        </aside>
+      <section class="content-section" id="awards">
+        <h2>Awards</h2>
+        <ul class="award-grid">
+          <li><span>Beijing Outstanding Graduate</span><span>2026</span></li>
+          <li><span>National First Prize, MathorCup Mathematical Modeling Challenge</span><span>2024</span></li>
+          <li><span>National Third Prize, 19th Challenge Cup Special Competition</span><span>2024</span></li>
+        </ul>
+      </section>
 
-        <main class="main-content">
-            
-            <section>
-                <h2 class="section-header">Research Interests</h2>
-                <p style="margin-bottom: 20px; color: var(--text-secondary); font-size: 1.05rem;">
-                    My research lies at the intersection of <b style="color:#f1f5f9">Artificial Intelligence</b> and <b style="color:#f1f5f9">Ocean Science (AI4Ocean)</b>. 
-                    I am actively exploring <b>Graph Neural Networks (GNN)</b> to model dynamic ocean systems, focusing on spatio-temporal data mining and physics-informed deep learning.
-                </p>
-                <div class="tag-cloud">
-                    <span class="tag">AI for Science</span>
-                    <span class="tag">GNN for Dynamic</span>
-                    <span class="tag">Spatio-Temporal Modeling</span>
-                </div>
-            </section>
+      <section class="content-section" id="visits" aria-label="Visits">
+        <h2>Global Visits</h2>
+        <div class="visit-map">
+          <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=ur9t9Tqp78ZeTvpLrDJba1enO4izPyyqqq_LcQE2xPY&cl=ffffff&w=a"></script>
+        </div>
+      </section>
 
-            <section>
-                <h2 class="section-header">Projects</h2>
-
-                <div class="project-item">
-                    <div class="project-head">
-                        <div class="project-title">Geometric Modeling & Decision Support for Road Damage Assessment</div>
-                        <div class="project-tech">CV · 3D Reconstruction · Decision Tree</div>
-                    </div>
-                    <div class="project-desc">
-                        Designed a monocular vision system to estimate pothole areas by integrating ZoeDepth for metric depth estimation and Pinhole Camera Models. 
-                        Further developed a decision support system for autonomous driving maintenance strategies based on the geometric analysis.
-                    </div>
-					<div class="project-outcome">
-						<i class="fas fa-file-alt"></i>
-						<span>
-							<b>Outcomes:</b> 1 Paper Submitted to <i>IEEE T-ITS</i> (arXiv:2505.21049) & 1 Paper Accepted by <i>IEEE ICSIDP 2024 (EI)</i>
-						</span>
-					</div>		
-				</div>						
-                <div class="project-item">
-                    <div class="project-head">
-                        <div class="project-title">Robust Small Target Detection via Multi-Sensor Fusion</div>
-                        <div class="project-tech"> Multimodal Feature Fusion · YOLO · Radar Signal Processing</div>
-                    </div>
-                    <div class="project-desc">
-                        Developed a hierarchical fusion architecture (Data, Feature, Decision levels) combining Infrared and Microwave Radar data. 
-                        Improved YOLO algorithm and optimized CFAR algorithm to achieve high-precision detection of small targets under complex interference.
-                    </div>
-                    <div class="project-outcome">
-                        <i class="fas fa-trophy"></i> <b>Award:</b> National 3rd Prize in "Challenge Cup" Special Competition
-                    </div>
-                </div>
-
-            </section>
-
-            <section>
-                <h2 class="section-header">Awards</h2>
-                <ul class="award-list">
-                    <li>
-                        <span class="award-name">校优秀学生干部</span>
-                        <span class="award-year">2025</span>
-                    </li>
-                    <li>
-                        <span class="award-name">五四优秀团员</span>
-                        <span class="award-year">2025</span>
-                    </li>
-                    <li>
-                        <span class="award-name">校优秀学生</span>
-                        <span class="award-year">2024</span>
-                    </li>
-                    <li>
-                        <span class="award-name">校优秀学习标兵</span>
-                        <span class="award-year">2023</span>
-                    </li>
-                    <li>
-                        <span class="award-name">MathorCup数学建模挑战赛 全国一等奖</span>
-                        <span class="award-year">2024</span>
-                    </li>
-                    <li>
-                        <span class="award-name">第19届挑战杯“揭榜挂帅”专项赛 全国三等奖</span>
-                        <span class="award-year">2024</span>
-                    </li>
-                    <li>
-                        <span class="award-name">北京市统计建模竞赛 二等奖</span>
-                        <span class="award-year">2023</span>
-                    </li>
-                    <li>
-                        <span class="award-name">全国大学生英语翻译大赛 北京市一等奖</span>
-                        <span class="award-year">2023</span>
-                    </li>
-                    <li>
-                        <span class="award-name">北京市大学生数学竞赛 三等奖</span>
-                        <span class="award-year">2023</span>
-                    </li>
-				    <li>
-                        <span class="award-name">部分地区大学生物理竞赛 三等奖</span>
-                        <span class="award-year">2023</span>
-                    </li>
-
-                </ul>
-            </section>
-            
-            <section class="map-container">
-              
-                <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.85rem; letter-spacing: 2px; font-weight: 700;">GLOBAL VISITS</p>
-                
-                <div style="opacity: 0.85; filter: grayscale(30%); transition: all 0.5s ease; mix-blend-mode: lighten;" 
-                     onmouseover="this.style.filter='grayscale(0%)'; this.style.opacity='1'" 
-                     onmouseout="this.style.filter='grayscale(30%)'; this.style.opacity='0.85'">
-                    
-                    <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=ur9t9Tqp78ZeTvpLrDJba1enO4izPyyqqq_LcQE2xPY&cl=0b1120&w=a"></script>
-                    
-                </div>
-            </section>
-
-         
-
-        </main>
-    </div>
-
-    <script>
-        const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let particles = [];
-        let mouse = { x: null, y: null, radius: 150 };
-
-        window.addEventListener('mousemove', (event) => {
-            mouse.x = event.x;
-            mouse.y = event.y;
-        });
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.3; 
-                this.vy = (Math.random() - 0.5) * 0.3;
-                this.size = Math.random() * 2 + 1;
-                this.baseX = this.x;
-                this.baseY = this.y;
-                this.density = (Math.random() * 30) + 1;
-            }
-            update() {
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx*dx + dy*dy);
-                let forceDirectionX = dx / distance;
-                let forceDirectionY = dy / distance;
-                let maxDistance = mouse.radius;
-                let force = (maxDistance - distance) / maxDistance;
-                let directionX = forceDirectionX * force * this.density;
-                let directionY = forceDirectionY * force * this.density;
-
-                if (distance < mouse.radius) {
-                    this.x -= directionX;
-                    this.y -= directionY;
-                } else {
-                    if (this.x !== this.baseX) {
-                        let dx = this.x - this.baseX;
-                        this.x -= dx/20;
-                    }
-                    if (this.y !== this.baseY) {
-                        let dy = this.y - this.baseY;
-                        this.y -= dy/20;
-                    }
-                }
-
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (this.x < 0 || this.x > width) this.vx *= -1;
-                if (this.y < 0 || this.y > height) this.vy *= -1;
-            }
-            draw() {
-                ctx.fillStyle = 'rgba(56, 189, 248, 0.5)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function init() {
-            particles = [];
-            const particleCount = Math.floor(window.innerWidth / 12); 
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-                
-                for (let j = i; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < 100) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(56, 189, 248, ${0.12 - distance/1000})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-
-        init();
-        animate();
-    </script>
+      <footer>
+        Last updated in 2026. Built as a static GitHub Pages homepage.
+      </footer>
+    </main>
+  </div>
 </body>
 </html>
