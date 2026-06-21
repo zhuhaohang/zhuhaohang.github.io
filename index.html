@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Haohang Zhu's personal academic homepage. Research interests: AI4Ocean and Spatiotemporal Representation Learning.">
+  <meta name="theme-color" content="#0b4f5b">
+  <title>Haohang Zhu | Personal Homepage</title>
+  <style>
+    :root {
+      --bg: #f4f7f7;
+      --paper: #ffffff;
+      --paper-soft: #fbfcfd;
+      --ink: #17212b;
+      --muted: #5d6978;
+      --subtle: #7b8693;
+      --line: #d9e2e5;
+      --line-soft: #edf1f3;
+      --accent: #0b6570;
+      --accent-dark: #0a4049;
+      --accent-soft: #e7f4f5;
+      --gold: #a87a2f;
+      --shadow: 0 24px 70px rgba(22, 36, 48, 0.12);
+      --shadow-soft: 0 10px 28px rgba(22, 36, 48, 0.08);
+      --radius: 8px;
+      --font: "Inter", "Segoe UI", "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(135deg, rgba(11, 101, 112, 0.11), transparent 34%),
+        linear-gradient(180deg, #ffffff 0, rgba(255, 255, 255, 0.72) 240px, transparent 520px),
+        var(--bg);
+      color: var(--ink);
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.72;
+      overflow-x: hidden;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      text-underline-offset: 3px;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .site {
+      width: min(1200px, calc(100% - 44px));
+      margin: 42px auto;
+      display: grid;
+      grid-template-columns: 318px minmax(0, 1fr);
+      gap: 30px;
+      align-items: start;
+    }
+
+    .profile,
+    .content {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.97);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .profile {
+      position: sticky;
+      top: 30px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .profile::before {
+      content: "";
+      display: block;
+      height: 5px;
+      background: linear-gradient(90deg, var(--accent), #9a7a38);
+    }
+
+    .profile-inner {
+      padding: 30px 28px 28px;
+    }
+
+    .avatar {
+      width: 166px;
+      height: 166px;
+      margin: 0 auto 22px;
+      overflow: hidden;
+      border: 1px solid rgba(11, 101, 112, 0.16);
+      border-radius: 50%;
+      background: var(--accent-soft);
+      box-shadow: 0 0 0 8px #f7fbfb, var(--shadow-soft);
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 58% 18%;
+    }
+
+    .profile h1 {
+      margin: 0;
+      text-align: center;
+      font-size: 1.95rem;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .name-cn {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 520;
+    }
+
+    .tagline {
+      margin: 18px 0 24px;
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.95rem;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .profile-section {
+      margin-top: 24px;
+    }
+
+    .profile-section h2,
+    .content-section h2 {
+      margin: 0 0 14px;
+      color: var(--accent-dark);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .profile-list {
+      display: grid;
+      gap: 13px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .profile-list li,
+    .profile-list a {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .profile-list strong {
+      display: block;
+      color: var(--ink);
+      font-weight: 760;
+    }
+
+    .nav {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+      margin-top: 26px;
+    }
+
+    .nav a {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 8px 10px;
+      background: linear-gradient(180deg, #ffffff, #f7fafb);
+      color: var(--ink);
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 680;
+      box-shadow: 0 1px 0 rgba(22, 36, 48, 0.04);
+    }
+
+    .nav a:hover {
+      border-color: rgba(11, 101, 112, 0.48);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .content {
+      min-width: 0;
+      padding: 50px 58px;
+    }
+
+    .hero {
+      padding-bottom: 34px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--gold);
+      font-size: 0.82rem;
+      font-weight: 820;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .hero h2 {
+      margin: 0;
+      max-width: 100%;
+      color: var(--ink);
+      font-size: clamp(2.25rem, 5vw, 4rem);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .highlight-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .highlight {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(11, 101, 112, 0.18);
+      border-radius: 999px;
+      padding: 5px 13px;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      font-size: 0.86rem;
+      font-weight: 780;
+    }
+
+    .content-section {
+      padding: 36px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .content-section:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .content-section p {
+      margin: 0 0 15px;
+      color: var(--muted);
+    }
+
+    .focus-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .focus-card {
+      min-height: 108px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, #ffffff, var(--paper-soft));
+      box-shadow: 0 1px 0 rgba(22, 36, 48, 0.04);
+    }
+
+    .focus-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.02rem;
+      line-height: 1.35;
+    }
+
+    .focus-card p {
+      margin: 0;
+      font-size: 0.94rem;
+    }
+
+    .publication {
+      padding: 20px 0;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .publication:first-of-type {
+      padding-top: 8px;
+      border-top: 0;
+    }
+
+    .project {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 164px;
+      gap: 24px;
+      padding: 24px 0;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .project:first-of-type {
+      padding-top: 8px;
+      border-top: 0;
+    }
+
+    .project h3,
+    .publication h3 {
+      margin: 0 0 9px;
+      color: #182330;
+      font-size: 1.14rem;
+      line-height: 1.35;
+    }
+
+    .project p,
+    .publication p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      text-align: justify;
+    }
+
+    .project-meta {
+      color: var(--accent-dark);
+      font-size: 0.82rem;
+      font-weight: 760;
+      line-height: 1.6;
+      text-align: right;
+    }
+
+    .outcome {
+      color: #445164;
+      font-size: 0.92rem;
+    }
+
+    .award-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .award-grid li {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 15px 17px;
+      background: linear-gradient(180deg, #ffffff, var(--paper-soft));
+      box-shadow: 0 1px 0 rgba(22, 36, 48, 0.04);
+    }
+
+    .award-grid span:first-child {
+      color: var(--ink);
+      font-weight: 660;
+    }
+
+    .award-grid span:last-child {
+      flex: 0 0 auto;
+      color: var(--gold);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .visit-map {
+      min-height: 140px;
+      margin-top: 14px;
+      overflow: hidden;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      background: var(--paper-soft);
+      display: grid;
+      place-items: center;
+    }
+
+    footer {
+      padding-top: 24px;
+      color: var(--subtle);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 900px) {
+      .site {
+        width: min(100% - 28px, 740px);
+        grid-template-columns: 1fr;
+        margin: 18px auto;
+      }
+
+      .profile {
+        position: static;
+      }
+
+      .content {
+        padding: 34px 26px;
+      }
+
+      .project {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .project-meta {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 560px) {
+      body {
+        font-size: 15px;
+      }
+
+      .site {
+        width: calc(100vw - 28px);
+        max-width: calc(100vw - 28px);
+      }
+
+      .profile,
+      .content {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .profile-inner {
+        padding: 24px 18px 22px;
+      }
+
+      .content {
+        padding: 28px 18px;
+      }
+
+      .avatar {
+        width: 132px;
+        height: 132px;
+      }
+
+      .profile h1 {
+        font-size: 1.58rem;
+      }
+
+      .tagline {
+        max-width: 280px;
+        margin-right: auto;
+        margin-left: auto;
+        white-space: normal;
+      }
+
+      .hero h2 {
+        font-size: clamp(1.75rem, 11vw, 2.55rem);
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .focus-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .award-grid li {
+        flex-direction: column;
+        gap: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <aside class="profile" aria-label="Profile">
+      <div class="profile-inner">
+        <div class="avatar">
+          <img src="./1.jpg" alt="Haohang Zhu">
+        </div>
+        <h1>
+          Haohang Zhu
+          <span class="name-cn">朱浩航</span>
+        </h1>
+        <p class="tagline">AI4Ocean / Spatiotemporal Representation Learning</p>
+
+        <section class="profile-section">
+          <h2>Education</h2>
+          <ul class="profile-list">
+            <li>
+              <strong>Shanghai Jiao Tong University</strong>
+              Ph.D. Student, Incoming 2026
+            </li>
+            <li>
+              <strong>Beijing Institute of Technology</strong>
+              Undergraduate, 2022-2026
+            </li>
+          </ul>
+        </section>
+
+        <section class="profile-section">
+          <h2>Research Interests</h2>
+          <ul class="profile-list">
+            <li><strong>AI4Ocean</strong></li>
+            <li><strong>Spatiotemporal Representation Learning</strong></li>
+          </ul>
+        </section>
+
+        <section class="profile-section">
+          <h2>Selected Honors</h2>
+          <ul class="profile-list">
+            <li><strong>Beijing Outstanding Graduate</strong>2026</li>
+            <li><strong>National Scholarship</strong>2025</li>
+          </ul>
+        </section>
+
+        <section class="profile-section">
+          <h2>Contact</h2>
+          <ul class="profile-list">
+            <li>
+              <strong>Email</strong>
+              <a href="mailto:zhuhaohang@sjtu.edu.cn">zhuhaohang@sjtu.edu.cn</a>
+            </li>
+            <li>
+              <strong>GitHub</strong>
+              <a href="https://github.com/zhuhaohang">github.com/zhuhaohang</a>
+            </li>
+          </ul>
+        </section>
+
+        <nav class="nav" aria-label="Page sections">
+          <a href="#bio">Bio</a>
+          <a href="#research">Research</a>
+          <a href="#projects">Projects</a>
+          <a href="#awards">Awards</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="hero" id="bio">
+        <p class="eyebrow">Personal Academic Homepage</p>
+        <h2>Research Profile</h2>
+        <p>
+          I am an incoming Ph.D. student at Shanghai Jiao Tong University. My research interests are AI4Ocean and Spatiotemporal Representation Learning.
+        </p>
+        <div class="highlight-row" aria-label="Research interests">
+          <span class="highlight">AI4Ocean</span>
+          <span class="highlight">Spatiotemporal Representation Learning</span>
+        </div>
+      </section>
+
+      <section class="content-section" id="research">
+        <h2>Research</h2>
+        <p>
+          My research focuses on AI4Ocean and Spatiotemporal Representation Learning, with an interest in learning useful representations for complex ocean-related spatial-temporal data.
+        </p>
+        <div class="focus-grid">
+          <article class="focus-card">
+            <h3>AI4Ocean</h3>
+            <p>AI methods for ocean science, ocean observation, and scientific discovery.</p>
+          </article>
+          <article class="focus-card">
+            <h3>Spatiotemporal Representation Learning</h3>
+            <p>Representation learning for spatial-temporal patterns, dynamics, and structured data.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section" id="publications">
+        <h2>Publications</h2>
+        <article class="publication">
+          <h3>Road Damage Assessment with Monocular Depth and Geometric Modeling</h3>
+          <p>
+            Submitted to <i>IEEE Transactions on Intelligent Transportation Systems</i>. Related preprint: arXiv:2505.21049.
+          </p>
+        </article>
+        <article class="publication">
+          <h3>Decision Support and Visual Measurement for Road Damage Scenarios</h3>
+          <p>
+            Accepted by <i>IEEE International Conference on Signal, Information and Data Processing</i> 2024.
+          </p>
+        </article>
+      </section>
+
+      <section class="content-section" id="projects">
+        <h2>Projects</h2>
+
+        <article class="project">
+          <div>
+            <h3>Geometric Modeling and Decision Support for Road Damage Assessment</h3>
+            <p>
+              Designed a monocular vision system to estimate pothole areas by integrating ZoeDepth for metric depth estimation with pinhole camera models. Further developed a decision support module for autonomous-driving maintenance strategies based on geometric analysis.
+            </p>
+            <div class="outcome">
+              Outcomes: 1 paper submitted to <i>IEEE Transactions on Intelligent Transportation Systems</i> and 1 paper accepted by <i>IEEE ICSIDP 2024</i>.
+            </div>
+          </div>
+          <div class="project-meta">Computer Vision<br>3D Reconstruction<br>Decision Support</div>
+        </article>
+
+        <article class="project">
+          <div>
+            <h3>Robust Small Target Detection via Multi-Sensor Fusion</h3>
+            <p>
+              Developed a hierarchical fusion architecture across data, feature, and decision levels by combining infrared and microwave radar data. Improved the YOLO pipeline and optimized the CFAR algorithm for small-target detection under complex interference.
+            </p>
+            <div class="outcome">
+              Award: National Third Prize in the Challenge Cup Special Competition.
+            </div>
+          </div>
+          <div class="project-meta">Multi-Modal Fusion<br>YOLO<br>Radar Signal Processing</div>
+        </article>
+      </section>
+
+      <section class="content-section" id="awards">
+        <h2>Awards</h2>
+        <ul class="award-grid">
+          <li><span>Beijing Outstanding Graduate</span><span>2026</span></li>
+          <li><span>National Scholarship</span><span>2025</span></li>
+          <li><span>National First Prize, MathorCup Mathematical Modeling Challenge</span><span>2024</span></li>
+          <li><span>National Third Prize, 19th Challenge Cup Special Competition</span><span>2024</span></li>
+          <li><span>Diwen Scholarship</span><span>2024</span></li>
+          <li><span>Xiaomi Scholarship</span><span>2023</span></li>
+        </ul>
+      </section>
+
+      <section class="content-section" id="visits" aria-label="Visits">
+        <h2>Visits</h2>
+        <div class="visit-map">
+          <script id="clustrmaps" src="https://clustrmaps.com/map_v2.js?d=ur9t9Tqp78ZeTvpLrDJba1enO4izPyyqqq_LcQE2xPY&amp;cl=ffffff&amp;w=a"></script>
+          <noscript>Visitor map requires JavaScript.</noscript>
+        </div>
+      </section>
+
+      <footer>
+        Last updated in 2026. Built as a static page for GitHub Pages.
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
